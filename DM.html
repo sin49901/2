@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>개인 메시지 (DM) 기능</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    height: 100vh;
+    margin: 0;
+  }
+  .chat-wrapper {
+    display: flex;
+    width: 900px;
+    height: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  .friend-list {
+    width: 250px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    background: #f7f7f7;
+  }
+  .friend-list h3 {
+    margin: 15px;
+    font-weight: 700;
+    color: #4caf50;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  .friend {
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s;
+  }
+  .friend:hover {
+    background: #e0f2f1;
+  }
+  .friend.active {
+    background: #4caf50;
+    color: white;
+    font-weight: 700;
+  }
+  .chat-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header {
+    padding: 15px 20px;
+    background: #4caf50;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #e9f5f3;
+  }
+  .message {
+    max-width: 70%;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 1rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+  }
+  .message.sent {
+    background: #4caf50;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+  .message.received {
+    background: white;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .chat-input-area {
+    padding: 15px 20px;
+    border-top: 1px solid #ccc;
+    background: #f7f7f7;
+    display: flex;
+    gap: 10px;
+  }
+  .chat-input-area textarea {
+    flex-grow: 1;
+    resize: none;
+    border-radius: 12px;
+    border: 1.5px solid #ccc;
+    padding: 10px 15px;
+    font-size: 1rem;
+    height: 50px;
+    transition: border-color 0.3s;
+  }
+  .chat-input-area textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+  }
+  .chat-input-area button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0 20px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .chat-input-area button:hover {
+    background: #43a047;
+  }
+  .no-chat-selected {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #777;
+    font-size: 1.2rem;
+  }
+</style>
+</head>
+<body>
+
+  <div class="chat-wrapper" role="main">
+    <aside class="friend-list" aria-label="친구 목록" tabindex="0">
+      <h3>친구 목록</h3>
+      <div class="friend" tabindex="0" role="button" aria-pressed="false" data-id="1">철수</div>
+      <div class="friend" tabindex="0" role="button" aria-pressed="false" data-id="2">영희</div>
+      <div class="friend" tabindex="0" role="button" aria-pressed="false" data-id="3">민수</div>
+    </aside>
+
+    <section class="chat-area" aria-live="polite">
+      <header class="chat-header" id="chatHeader" aria-label="채팅 상대">친구를 선택하세요</header>
+      <div class="chat-messages" id="chatMessages" tabindex="0" aria-label="채팅 메시지 목록">
+        <div class="no-chat-selected">채팅할 친구를 선택해주세요.</div>
+      </div>
+      <form class="chat-input-area" id="chatForm" aria-label="메시지 입력 및 전송" style="display:none;">
+        <textarea id="chatInput" placeholder="메시지를 입력하세요..." required aria-required="true"></textarea>
+        <button type="submit" aria-label="메시지 전송">전송</button>
+      </form>
+    </section>
+  </div>
+
+<script>
+  const friends = document.querySelectorAll('.frien
