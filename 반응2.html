@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>좋아요 표시</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fafafa;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .like-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    font-size: 1.4rem;
+    user-select: none;
+  }
+  .like-btn {
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s ease;
+    font-size: 2rem;
+    line-height: 1;
+    user-select: none;
+  }
+  .like-btn.liked {
+    color: #e0245e; /* 빨간 하트색 */
+  }
+  .like-count {
+    font-weight: 700;
+    color: #333;
+    font-size: 1.2rem;
+    min-width: 30px;
+    text-align: center;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="like-container" aria-label="좋아요 버튼 및 수">
+    <span id="likeBtn" class="like-btn" role="button" tabindex="0" aria-pressed="false" aria-label="좋아요 버튼">♡</span>
+    <span id="likeCount" class="like-count">0</span>
+  </div>
+
+<script>
+  const likeBtn = document.getElementById('likeBtn');
+  const likeCount = document.getElementById('likeCount');
+
+  let liked = false;
+  let count = 0;
+
+  function toggleLike() {
+    liked = !liked;
+    count += liked ? 1 : -1;
+    likeBtn.textContent = liked ? '♥' : '♡';
+    likeBtn.classList.toggle('liked', liked);
+    likeCount.textContent = count;
+    likeBtn.setAttribute('aria-pressed', liked.toString());
+  }
+
+  likeBtn.addEventListener('click', toggleLike);
+  likeBtn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleLike();
+    }
+  });
+</script>
+
+</body>
+</html>
