@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>검색 기능 (친구 & 게시글)</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 30px;
+    background: #f5f5f5;
+  }
+  .search-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+  }
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid #4caf50;
+    margin-bottom: 20px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    font-weight: 700;
+    color: #555;
+    border-bottom: 4px solid transparent;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .tab.active {
+    border-bottom-color: #4caf50;
+    color: #4caf50;
+  }
+  .result-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: default;
+  }
+  .result-item:hover {
+    background: #e0f2f1;
+  }
+  .result-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #333;
+  }
+  .result-sub {
+    color: #777;
+    font-size: 0.9rem;
+  }
+  .no-result {
+    text-align: center;
+    color: #999;
+    padding: 30px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="search-container" role="search" aria-label="친구 및 게시글 검색">
+  <input type="search" id="searchInput" class="search-input" placeholder="친구 또는 게시글 검색" aria-describedby="searchDesc" />
+  <div id="searchDesc" class="visually-hidden">검색어를 입력하면 친구 목록과 게시글 목록에서 결과를 찾습니다.</div>
+
+  <div class="tabs" role="tablist" aria-label="검색 결과 탭">
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="friendsPanel" id="friendsTab">친구</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="postsPanel" id="postsTab">게시글</button>
+  </div>
+
+  <div id="friendsPanel" class="result-list" role="tabpanel" aria-labelledby="friendsTab">
+    <!-- 친구 검색 결과 -->
+  </div>
+  <div id="postsPanel" class="result-list" role="tabpanel" aria-labelledby="postsTab" hidden>
+    <!-- 게시글 검색 결과 -->
+  </div>
+</div>
+
+<script>
+  const friendsData = [
+    { id: 1, name: '철수', intro: '사진 좋아하는 여행가' },
+    { id: 2, name: '영희', intro: '책 읽는 걸 좋아해요' },
+    { id: 3, name: '민수', intro: '프로그래밍 마니아' },
+    { id: 4, name: '수지', intro: '맛집 탐방 중' },
+  ];
+
+  const postsData = [
+    { id: 1, title: '여행 사진 공유합니다!', content: '이번 제주도 여행 정말 좋았어요...' },
+    { id: 2, title: '새 책 추천', content: '최근에 읽은 소설 정말 재미있어요.' },
+    { id: 3, title: '코딩 공부 팁', content: '함수형 프로그래밍에 대해 배워보았어요.' },
+    { id: 4, title: '맛집 후기', content: '강남의 숨은 맛집을 소개합니다.' },
+  ];
+
+  const searchInput = document.getElementById('searchInput');
+  const friendsPanel = document.getElementById('friendsPanel');
+  const postsPanel = document.getElementById('postsPanel');
+  const friendsTab = document.getElementById('friendsTab');
+  const postsTab = document.getElementById('postsTab');
+  let activeTab = 'friends';
+
+  function renderFriends(filter) {
+    const filtered = friendsData.filter(f =>
+      f.name.includes(filter) || f.intro.includes(filter)
+    );
+    friendsPanel.innerHTML = '';
+    if (filtered.length === 0) {
+      friendsPanel.innerHTML = '<div class="no-result">친구를 찾을 수 없습니다.</div>';
+      return;
+    }
+    filtered.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.tabIndex = 0;
+      div.setAttribute('role', 'button');
+      div.textContent = `${f.name} — ${f.intro}`;
+      friendsPanel.appendChild(div);
+    });
+  }
+
+  function renderPosts(filter) {
+    const filtered = postsData.filter(p =>
+      p.title.includes(filter) || p.content.includes(filter)
+    );
+    postsPanel.innerHTML = '';
+    if (filtered.length === 0) {
+      postsPanel.innerHTML = '<div class="no-result">게시글을 찾을 수 없습니다.</div>';
+      return;
+    }
+    filtered.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.tabIndex = 0;
+      div.setAttribute('role', 'button');
+      div.innerHTML = `<div class="result-title">${p.title}</div><div class="result-sub">${p.content.substring(0, 50)}...</div>`;
+      postsPanel.appendChild(div);
+    });
+  }
+
+  searchInput.addEventListener('input', () => {
+    const val = searchInput.value.trim();
+    if (activeTab === 'friends') {
+      renderFriends(val);
+    } else {
+      renderPosts(val);
+    }
+  });
+
+  friendsTab.addEventListener('click', () => {
+    if (activeTab === 'friends') return;
+    activeTab = 'friends';
+    friendsTab.classList.add('active');
+    postsTab.classList.remove('active');
+    friendsTab.setAttribute('aria-selected', 'true');
+    postsTab.setAttribute('aria-selected', 'false');
+    friendsPanel.hidden = false;
+    postsPanel.hidden = true;
+    renderFriends(searchInput.value.trim());
+  });
+
+  postsTab.addEventListener('click', () => {
+    if (activeTab === 'posts') return;
+    activeTab = 'posts';
+    postsTab.classList.add('active');
+    friendsTab.classList.remove('active');
+    postsTab.setAttribute('aria-selected', 'true');
+    friendsTab.setAttribute('aria-selected', 'false');
+    postsPanel.hidden = false;
+    friendsPanel.hidden = true;
+    renderPosts(searchInput.value.trim());
+  });
+
+  // 초기 렌더링
+  renderFriends('');
+</script>
+
+</body>
+</html>
