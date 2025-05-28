@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>설정 - 개인정보</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f9f9f9;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 {
+    color: #4caf50;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  form {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #333;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1.8px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: #4caf50;
+  }
+  .toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 28px;
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    border-radius: 28px;
+    transition: 0.4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+  input:checked + .slider {
+    background-color: #4caf50;
+  }
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+  .section {
+    margin-bottom: 30px;
+  }
+  button.delete-account {
+    background: #e53935;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  button.delete-account:hover {
+    background: #c62828;
+  }
+  .note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: -15px;
+    margin-bottom: 15px;
+  }
+</style>
+</head>
+<body>
+
+<h1>개인정보 설정</h1>
+<form id="profileForm" aria-label="개인정보 변경 폼">
+  <div class="section">
+    <label for="nameInput">이름</label>
+    <input type="text" id="nameInput" name="name" placeholder="이름을 입력하세요" value="홍길동" required />
+  </div>
+
+  <div class="section">
+    <label for="emailInput">이메일</label>
+    <input type="email" id="emailInput" name="email" placeholder="이메일을 입력하세요" value="hong@example.com" required />
+  </div>
+
+  <div class="section">
+    <label for="passwordInput">비밀번호 변경</label>
+    <input type="password" id="passwordInput" name="password" placeholder="새 비밀번호 입력 (변경하지 않으면 비워두세요)" />
+  </div>
+
+  <div class="section">
+    <label for="notifToggle">알림 설정</label>
+    <label class="toggle-switch" aria-label="알림 설정 토글">
+      <input type="checkbox" id="notifToggle" checked />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <button type="submit">저장하기</button>
+</form>
+
+<section style="margin-top: 40px;">
+  <button class="delete-account" aria-label="계정 탈퇴하기 버튼">계정 탈퇴</button>
+  <p class="note">계정 탈퇴 시 모든 정보가 삭제되며 복구가 불가능합니다.</p>
+</section>
+
+<script>
+  const form = document.getElementById('profileForm');
+  const deleteBtn = document.querySelector('.delete-account');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const notif = document.getElementById('notifToggle').checked;
+
+    // 실제 서버 요청 코드 자리
+    alert(`저장됨:\n이름: ${name}\n이메일: ${email}\n비밀번호: ${password ? '변경됨' : '변경안함'}\n알림 설정: ${notif ? '켬' : '끔'}`);
+  });
+
+  deleteBtn.addEventListener('click', () => {
+    if (confirm('정말로 계정을 탈퇴하시겠습니까? 모든 데이터가 삭제되며 복구할 수 없습니다.')) {
+      alert('계정이 탈퇴 처리되었습니다.');
+      // 실제 계정 탈퇴 API 호출 자리
+    }
+  });
+</script>
+
+</body>
+</html>
