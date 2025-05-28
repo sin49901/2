@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>알림 기능</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f9f9f9;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .notification-wrapper {
+    position: relative;
+    width: 350px;
+  }
+  .notif-icon {
+    font-size: 28px;
+    cursor: pointer;
+    position: relative;
+    color: #444;
+  }
+  .notif-icon:hover {
+    color: #4caf50;
+  }
+  .notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #e0245e;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .notif-list {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    width: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 1000;
+  }
+  .notif-list.active {
+    display: block;
+  }
+  .notif-item {
+    border-bottom: 1px solid #eee;
+    padding: 12px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  .notif-item:last-child {
+    border-bottom: none;
+  }
+  .notif-text {
+    max-width: 260px;
+  }
+  .notif-type {
+    font-weight: 700;
+    color: #4caf50;
+    margin-right: 6px;
+  }
+  .notif-actions button {
+    border: none;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: color 0.3s;
+  }
+  .notif-actions button:hover {
+    color: #e0245e;
+  }
+  .empty-msg {
+    text-align: center;
+    color: #999;
+    padding: 30px 0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="notification-wrapper" aria-label="알림 메뉴">
+    <div class="notif-icon" id="notifIcon" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="알림 보기">
+      🔔
+      <span class="notif-badge" id="notifBadge" aria-live="polite">0</span>
+    </div>
+
+    <div class="notif-list" id="notifList" role="menu" aria-label="알림 목록">
+      <!-- 알림 항목들이 여기 표시됨 -->
+      <div class="empty-msg" id="emptyMsg">새로운 알림이 없습니다.</div>
+    </div>
+  </div>
+
+<script>
+  const notifIcon = document.getElementById('notifIcon');
+  const notifList = document.getElementById('notifList');
+  const notifBadge = document.getElementById('notifBadge');
+  const emptyMsg = document.getElementById('emptyMsg');
+
+  let notifications = [];
+
+  function updateBadge() {
+    const unreadCount = notifications.filter(n => !n.read).length;
+    notifBadge.textContent = unreadCount;
+    notifBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+  }
+
+  function renderNotifications() {
+    notifList.innerHTML = '';
+    if (notifications.length === 0) {
+      notifList.appendChild(emptyMsg);
+      emptyMsg.style.display = 'block';
+      return;
+    } else {
+      emptyMsg.style.display = 'none';
+    }
+
+    notifications.forEach((notif, index) => {
+      const item = document.createElement('div');
+      item.className = 'notif-item';
+      if (!notif.read) item.style.backgroundColor = '#e8f5e9';
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'notif-text';
+
+      const typeSpan = document.createElement('span');
+      typeSpan.className = 'notif-type';
+      typeSpan.textContent = `[${notif.type}]`;
+
+      const messageSpan = document.createElement('span');
+      messageSpan.textContent = notif.message;
+
+      textDiv.appendChild(typeSpan);
+      textDiv.appendChild(messageSpan);
+
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'notif-actions';
+
+      const markReadBtn = document.createElement('button');
+      markReadBtn.textContent = notif.read ? '읽음 취소' : '읽음';
+      markReadBtn.setAttribute('aria-label', notif.read ? '읽음 취소' : '읽음 처리');
+      markReadBtn.onclick = () => {
+        notifications[index].read = !notifications[index].read;
+        renderNotifications();
+        updateBadge();
+      };
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '삭제';
+      deleteBtn.setAttribute('aria-label', '알림 삭제');
+      deleteBtn.onclick = () => {
+        notifications.splice(index, 1);
+        renderNotifications();
+        updateBadge();
+      };
+
+      actionsDiv.appendChild(markReadBtn);
+      actionsDiv.appendChild(deleteBtn);
+
+      item.appendChild(textDiv);
+      item.appendChild(actionsDiv);
+
+      notifList.appendChild(item);
+    });
+  }
+
+  notifIcon.addEventListener('click', () => {
+    const expanded = notifIcon.getAttribute('aria-expanded') === 'true';
+    notifIcon.setAttribute('aria-expanded', (!expanded).toString());
+    notifList.classList.toggle('active');
+  });
+
+  notifIcon.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      notifIcon.click();
+    }
+  });
+
+  // 테스트용 알림 자동 추가 함수
+  function addNotification(type, message) {
+    notifications.unshift({ type, message, read: false });
+    renderNotifications();
+    updateBadge();
+  }
+
+  // 테스트 알림 예시
+  addNotification('게시글', '친구 철수가 새 게시글을 작성했습니다.');
+  addNotification('댓글', '친구 영희가 당신의 게시글에 댓글을 남겼습니다.');
+  addNotification('좋아요', '친구 민수가 당신의 게시글에 좋아요를 눌렀습니다.');
+</script>
+
+</body>
+</html>
