@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>친구 추가 및 관리</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f7f9fc;
+    margin: 0; padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .container {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 20px 30px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1.5px solid #ccc;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 0;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+  }
+  button:hover {
+    background-color: #43a047;
+  }
+  .section {
+    margin-top: 30px;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    background: #eef4f8;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .friend-name {
+    font-weight: 600;
+  }
+  .btn-group button {
+    margin-left: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+  .accept-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>친구 추가 및 관리</h2>
+
+    <!-- 친구 요청 보내기 -->
+    <div>
+      <input type="text" id="friendInput" placeholder="친구 이메일 또는 이름 입력" />
+      <button id="sendRequestBtn">친구 요청 보내기</button>
+    </div>
+
+    <!-- 친구 요청 목록 -->
+    <div class="section">
+      <h3>친구 요청</h3>
+      <ul id="friendRequestsList">
+        <!-- 예시 항목 -->
+        <!-- <li>홍길동
+          <div class="btn-group">
+            <button class="accept-btn">수락</button>
+            <button class="reject-btn">거절</button>
+          </div>
+        </li> -->
+      </ul>
+    </div>
+
+    <!-- 친구 목록 -->
+    <div class="section">
+      <h3>친구 목록</h3>
+      <ul id="friendList">
+        <!-- 예시 항목 -->
+        <!-- <li>김철수</li> -->
+      </ul>
+    </div>
+  </div>
+
+<script>
+  const friendInput = document.getElementById('friendInput');
+  const sendRequestBtn = document.getElementById('sendRequestBtn');
+  const friendRequestsList = document.getElementById('friendRequestsList');
+  const friendList = document.getElementById('friendList');
+
+  // 예시 데이터
+  let friendRequests = [
+    { id: 1, name: '홍길동' },
+    { id: 2, name: '이순신' }
+  ];
+  let friends = [
+    { id: 101, name: '박영희' }
+  ];
+
+  // 친구 요청 목록 표시 함수
+  function renderFriendRequests() {
+    friendRequestsList.innerHTML = '';
+    if(friendRequests.length === 0) {
+      friendRequestsList.innerHTML = '<li>친구 요청이 없습니다.</li>';
+      return;
+    }
+    friendRequests.forEach(req => {
+      const li = document.createElement('li');
+      li.textContent = req.name;
+      li.classList.add('request-item');
+
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'btn-group';
+
+      const acceptBtn = document.createElement('button');
+      acceptBtn.className = 'accept-btn';
+      acceptBtn.textContent = '수락';
+      acceptBtn.onclick = () => acceptRequest(req.id);
+
+      const rejectBtn = document.createElement('button');
+      rejectBtn.className = 'reject-btn';
+      rejectBtn.textContent = '거절';
+      rejectBtn.onclick = () => rejectRequest(req.id);
+
+      btnGroup.appendChild(acceptBtn);
+      btnGroup.appendChild(rejectBtn);
+
+      li.appendChild(btnGroup);
+      friendRequestsList.appendChild(li);
+    });
+  }
+
+  // 친구 목록 표시 함수
+  function renderFriends() {
+    friendList.innerHTML = '';
+    if(friends.length === 0) {
+      friendList.innerHTML = '<li>친구가 없습니다.</li>';
+      return;
+    }
+    friends.forEach(friend => {
+      const li = document.createElement('li');
+      li.textContent = friend.name;
+      friendList.appendChild(li);
+    });
+  }
+
+  // 친구 요청 수락
+  function acceptRequest(id) {
+    const index = friendRequests.findIndex(r => r.id === id);
+    if(index !== -1) {
+      // 친구 목록에 추가
+      friends.push(friendRequests[index]);
+      // 친구 요청에서 제거
+      friendRequests.splice(index, 1);
+      renderFriendRequests();
+      renderFriends();
+      alert('친구 요청이 수락되었습니다.');
+    }
+  }
+
+  // 친구 요청 거절
+  function rejectRequest(id) {
+    const index = friendRequests.findIndex(r => r.id === id);
+    if(index !== -1) {
+      friendRequests.splice(index, 1);
+      renderFriendRequests();
+      alert('친구 요청이 거절되었습니다.');
+    }
+  }
+
+  // 친구 요청 보내기 (임시 동작: 이름 추가만)
+  sendRequestBtn.onclick = () => {
+    const name = friendInput.value.trim();
+    if(name === '') {
+      alert('친구 이름을 입력하세요.');
+      return;
+    }
+    // 실제 서비스에서는 서버로 요청 보내고 상태 받아야 함
+    friendRequests.push({ id: Date.now(), name });
+    friendInput.value = '';
+    renderFriendRequests();
+    alert('친구 요청이 전송되었습니다.');
+  };
+
+  // 초기 렌더링
+  renderFriendRequests();
+  renderFriends();
+</script>
+
+</body>
+</html>
