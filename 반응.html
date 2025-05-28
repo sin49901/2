@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>댓글 및 좋아요 기능</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .post-container {
+    background: white;
+    width: 420px;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .post-text {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  .like-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .like-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #777;
+    margin-right: 8px;
+    transition: color 0.3s;
+  }
+  .like-btn.liked {
+    color: #e0245e; /* 핑크색 하트 */
+  }
+  .like-count {
+    font-weight: 600;
+    color: #555;
+  }
+  .comments-section {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+  }
+  .comment-list {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  .comment-list li {
+    background: #f4f6f8;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+  .comment-form textarea {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    padding: 8px;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+  }
+  .comment-form textarea:focus {
+    border-color: #4caf50;
+    outline: none;
+  }
+  .comment-form button {
+    margin-top: 8px;
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  .comment-form button:hover {
+    background-color: #43a047;
+  }
+</style>
+</head>
+<body>
+
+  <div class="post-container">
+    <div class="post-text" id="postText">
+      오늘은 날씨가 정말 좋아서 친구들과 산책했어요! 😊
+    </div>
+
+    <div class="like-section">
+      <button class="like-btn" id="likeBtn" aria-label="좋아요 버튼">♡</button>
+      <div class="like-count" id="likeCount">0</div>
+    </div>
+
+    <div class="comments-section">
+      <ul class="comment-list" id="commentList">
+        <!-- 댓글 목록 -->
+      </ul>
+      <form id="commentForm" class="comment-form">
+        <textarea id="commentInput" placeholder="댓글을 입력하세요..." required></textarea>
+        <button type="submit">댓글 달기</button>
+      </form>
+    </div>
+  </div>
+
+<script>
+  const likeBtn = document.getElementById('likeBtn');
+  const likeCountEl = document.getElementById('likeCount');
+  const commentForm = document.getElementById('commentForm');
+  const commentInput = document.getElementById('commentInput');
+  const commentList = document.getElementById('commentList');
+
+  let liked = false;
+  let likeCount = 0;
+
+  likeBtn.addEventListener('click', () => {
+    liked = !liked;
+    likeCount += liked ? 1 : -1;
+    likeBtn.textContent = liked ? '♥' : '♡';
+    likeBtn.classList.toggle('liked', liked);
+    likeCountEl.textContent = likeCount;
+  });
+
+  commentForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const commentText = commentInput.value.trim();
+    if (!commentText) {
+      alert('댓글을 입력해주세요.');
+      return;
+    }
+    const li = document.createElement('li');
+    li.textContent = commentText;
+    commentList.appendChild(li);
+    commentInput.value = '';
+  });
+</script>
+
+</body>
+</html>
