@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>계정 탈퇴</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fff0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .delete-container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.2);
+    max-width: 400px;
+    text-align: center;
+  }
+  h2 {
+    color: #d32f2f;
+    margin-bottom: 20px;
+  }
+  p {
+    color: #555;
+    margin-bottom: 30px;
+  }
+  button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #b71c1c;
+  }
+</style>
+</head>
+<body>
+
+<div class="delete-container" role="main" aria-labelledby="delTitle">
+  <h2 id="delTitle">계정 탈퇴</h2>
+  <p>계정을 탈퇴하면 모든 데이터가 삭제되며 복구할 수 없습니다.<br />정말로 탈퇴하시겠습니까?</p>
+  <button id="deleteBtn" aria-describedby="desc">계정 탈퇴하기</button>
+</div>
+
+<script>
+  document.getElementById('deleteBtn').addEventListener('click', async () => {
+    const confirmDelete = confirm('정말로 계정을 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다.');
+    if (!confirmDelete) return;
+
+    try {
+      // 예시: 서버 API 호출 - 실제 주소와 인증 토큰 필요
+      const response = await fetch('/api/account/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Bearer 토큰값',  // 인증 필요 시
+        },
+      });
+
+      if (!response.ok) throw new Error('서버 오류 발생');
+
+      alert('계정이 성공적으로 탈퇴 처리되었습니다.');
+      // 탈퇴 후 리다이렉트 또는 로그아웃 처리
+      window.location.href = '/goodbye'; // 탈퇴 후 안내 페이지 예시
+    } catch (err) {
+      alert('계정 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      console.error(err);
+    }
+  });
+</script>
+
+</body>
+</html>
