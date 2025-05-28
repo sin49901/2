@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>게시글 작성 및 사진 업로드</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f9f9f9;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .post-container {
+    background: white;
+    width: 400px;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    resize: vertical;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+  }
+  textarea:focus {
+    border-color: #4caf50;
+    outline: none;
+  }
+  input[type="file"] {
+    display: none;
+  }
+  label.upload-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+    margin-bottom: 10px;
+  }
+  .image-preview {
+    margin-top: 10px;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: contain;
+    display: none;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+  button.post-btn {
+    width: 100%;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    border-radius: 7px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button.post-btn:hover {
+    background-color: #43a047;
+  }
+</style>
+</head>
+<body>
+
+  <div class="post-container">
+    <h2>게시글 작성</h2>
+    <form id="postForm">
+      <textarea id="postText" placeholder="게시글 내용을 입력하세요..." required></textarea>
+      <label for="imageInput" class="upload-btn">사진 첨부</label>
+      <input type="file" id="imageInput" accept="image/*" />
+
+      <img id="imagePreview" class="image-preview" alt="이미지 미리보기" />
+
+      <button type="submit" class="post-btn">게시</button>
+    </form>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      } else {
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+      }
+    });
+
+    document.getElementById('postForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const text = document.getElementById('postText').value.trim();
+      if (!text) {
+        alert('게시글 내용을 입력해주세요.');
+        return;
+      }
+      alert('게시글이 등록되었습니다!');
+      // 실제 게시글 저장은 서버 연동 필요
+      e.target.reset();
+      imagePreview.src = '';
+      imagePreview.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
