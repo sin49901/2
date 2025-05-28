@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>친구와 일상 공유</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0; padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: opacity 0.3s;
+    }
+    nav a:hover {
+      opacity: 0.8;
+    }
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    section {
+      background: white;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    section h2 {
+      margin-top: 0;
+      color: #4caf50;
+      font-size: 1.4rem;
+      border-bottom: 2px solid #4caf50;
+      padding-bottom: 10px;
+    }
+    /* 프로필 */
+    #profile {
+      display: flex;
+      align-items: center;
+    }
+    #profile img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid #4caf50;
+    }
+    #profile .info {
+      flex: 1;
+    }
+    #profile .info h3 {
+      margin: 0 0 5px 0;
+    }
+    #profile .info p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    /* 친구 목록 */
+    #friendsList ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+    }
+    #friendsList li {
+      background: #e8f5e9;
+      padding: 10px 15px;
+      border-radius: 10px;
+      flex: 0 0 auto;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-width: 80px;
+      text-align: center;
+      font-weight: 600;
+      color: #2e7d32;
+    }
+    #friendsList li:hover {
+      background-color: #c8e6c9;
+    }
+    /* 게시글 피드 */
+    #feed article {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+    }
+    #feed article:last-child {
+      border-bottom: none;
+    }
+    #feed article h3 {
+      margin: 0 0 6px 0;
+      color: #388e3c;
+    }
+    #feed article p {
+      margin: 0 0 8px 0;
+      line-height: 1.4;
+      color: #555;
+    }
+    #feed article img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 15px 10px;
+      color: #999;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>일상 공유 웹</h1>
+  <nav>
+    <a href="/login.html">로그인</a>
+    <a href="/signup.html">회원가입</a>
+    <a href="/profile.html">내 프로필</a>
+  </nav>
+</header>
+
+<main>
+  <section id="profile" aria-label="사용자 프로필">
+    <img src="https://via.placeholder.com/70" alt="프로필 사진" />
+    <div class="info">
+      <h3>홍길동</h3>
+      <p>사진 좋아하는 여행가</p>
+    </div>
+  </section>
+
+  <section id="friendsList" aria-label="친구 목록">
+    <h2>친구 목록</h2>
+    <ul>
+      <li tabindex="0">철수</li>
+      <li tabindex="0">영희</li>
+      <li tabindex="0">민수</li>
+      <li tabindex="0">수지</li>
+    </ul>
+  </section>
+
+  <section id="feed" aria-label="게시글 피드">
+    <h2>게시글</h2>
+    <article>
+      <h3>여행 사진 공유합니다!</h3>
+      <p>이번 제주도 여행 정말 좋았어요. 사진도 많이 찍었답니다!</p>
+      <img src="https://via.placeholder.com/600x300?text=제주도+사진" alt="제주도 여행 사진" />
+    </article>
+    <article>
+      <h3>새 책 추천</h3>
+      <p>최근에 읽은 소설 정말 재미있어요. 추천해드려요!</p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 일상 공유 웹. 모두의 공간.
+</footer>
+
+</body>
+</html>
